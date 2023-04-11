@@ -44,6 +44,7 @@ class Product(db.model):
     category = db.Column(db.String(100), nullable=False)
     image1 = db.Column(db.String(255))
     image2 = db.Column(db.String(255))
+    user = db.relationship('User', backref=db.backref('posts', lazy=True))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

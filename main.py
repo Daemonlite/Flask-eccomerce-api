@@ -67,3 +67,22 @@ def delete_user(id):
         return jsonify({'message': 'user deleted successfully.'})
     else:
         return jsonify({'error': 'user not found.'}), 404
+    
+
+@app.route('/products',methods=["GET"])
+def getProducts():
+    products = Product.query.all()
+    prod_list = [prod.to_dict() for prod in products]
+    return jsonify(products=prod_list)
+
+
+@app.route('/products/<int:prod_id>',methods=["GET"])
+def get_product_by_id(prod_id):
+    prods = Product.query.get(prod_id)
+    if prods:
+        return jsonify(prods.to_dict())
+    else:
+        return jsonify({'error': 'Product not found.'}), 404
+
+@app.route('/product/create',methods=["GET"])
+def create_product():

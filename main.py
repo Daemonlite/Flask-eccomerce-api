@@ -86,3 +86,33 @@ def get_product_by_id(prod_id):
 
 @app.route('/product/create',methods=["GET"])
 def create_product():
+    # Get data from request
+    product_name = request.json['product']
+    descr = request.json['descr']
+    quantity = request.json['quantity']
+    price = request.json['price']
+    category = request.json['category']
+    image1 = request.json['image1']
+    image2 = request.json['image2']
+    user_id = request.json['user_id']
+
+
+    # Check if all required data is provided
+    if product_name and descr and user_id and quantity and price and category and image1 and image2:
+        try:
+            # Create a new product object
+            product = Product(product_name=product_name, quantity=quantity, price=price, image1=image1, image2=image2 ,user_id=user_id)
+
+            # Add and commit the new product to the database
+            db.session.add(product)
+            db.session.commit()
+
+            # Return success response
+            return jsonify({'message': 'product created successfully', 'product_id': product.id}), 201
+        except Exception as e:
+            # Return error response if an error occurs
+            db.session.rollback()
+            return jsonify({'message': 'Failed to create product', 'error': str(e)}), 500
+    else:
+        # Return error response if required data is missing
+        return jsonify({'message': 'Missing required data'}), 400

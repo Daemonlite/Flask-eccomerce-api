@@ -84,10 +84,10 @@ def get_product_by_id(prod_id):
     else:
         return jsonify({'error': 'Product not found.'}), 404
 
-@app.route('/product/create',methods=["GET"])
+@app.route('/product/create',methods=["POST"])
 def create_product():
     # Get data from request
-    product_name = request.json['product']
+    product_name = request.json['product_name']
     descr = request.json['descr']
     quantity = request.json['quantity']
     price = request.json['price']
@@ -101,7 +101,7 @@ def create_product():
     if product_name and descr and user_id and quantity and price and category and image1 and image2:
         try:
             # Create a new product object
-            product = Product(product_name=product_name, quantity=quantity, price=price, image1=image1, image2=image2 ,user_id=user_id)
+            product = Product(product_name=product_name, quantity=quantity, price=price, image1=image1, image2=image2 ,user_id=user_id, category=category)
 
             # Add and commit the new product to the database
             db.session.add(product)
@@ -116,3 +116,31 @@ def create_product():
     else:
         # Return error response if required data is missing
         return jsonify({'message': 'Missing required data'}), 400
+    
+    
+@app.route('/products/<int:id>',methods=["PUT"])
+def update_product(id):
+    product = Product.query.get(id)
+    if product:
+        product.product_name = request.json['product_name']
+        product.quantity = request.json['quantity']
+        product.price = request.json['price']
+        product.image1 = request.json['image1']
+        product.image2 = request.json['image2']
+        product.category = request.category
+        product.user_id = request.json['user_id']
+        db.session.commit()
+        return jsonify({'message': 'product updated successfully.', 'product': product.to_dict()})
+    else:
+        return jsonify({'error': 'product not found.'}), 404
+    
+
+@app.route('/product/<int:id>', methods=['DELETE'])
+def delete_product(id):
+    product = Product.query.get(id)
+    if product:
+        db.session.delete(product)
+        db.session.commit()
+        return jsonify({'message': 'product deleted successfully.'})
+    else:
+        return jsonify({'error': 'product not found.'}), 404

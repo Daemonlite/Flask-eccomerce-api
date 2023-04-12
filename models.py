@@ -37,16 +37,16 @@ class User(db.Model):
             'updated_at': self.updated_at
         }
 
-class Product(db.model):
+class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_name = db.Column(db.String(100), nullable=False)
     descr = db.Column(db.String(400),nullable=False)
-    quantity = db.column(db.Integer,primary_key=True)
-    price = db.column(db.Integer,primar_key = True)
+    quantity = db.Column(db.Integer,primary_key=True)
+    price = db.Column(db.Integer,primary_key = True)
     category = db.Column(db.String(100), nullable=False)
     image1 = db.Column(db.String(255))
     image2 = db.Column(db.String(255))
-    user_id = db.column(db.String(255))
+    user_id = db.Column(db.String(255))
     user = db.relationship('User', backref=db.backref('products', lazy=True))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -73,11 +73,11 @@ class Product(db.model):
             'updated_at': self.updated_at
         }
     
-class Cart(db.model):
+class Cart(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     descr = db.Column(db.String(400),nullable=False)
-    quantity = db.column(db.Integer,primary_key=True)
-    price = db.column(db.Integer,primar_key = True)
+    quantity = db.Column(db.Integer,primary_key=True)
+    price = db.Column(db.Integer,primary_key = True)
     category = db.Column(db.String(100), nullable=False)
     image1 = db.Column(db.String(255))
     image2 = db.Column(db.String(255))

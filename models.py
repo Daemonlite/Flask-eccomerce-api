@@ -1,12 +1,6 @@
-
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-# from flask_migrate import Migrate
-from datetime import datetime  # Import datetime for handling timestamps
-
 from datetime import datetime
-# Create an instance of SQLAlchemy
+
 db = SQLAlchemy()
 
 class User(db.Model):
@@ -37,6 +31,7 @@ class User(db.Model):
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }
+
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_name = db.Column(db.String(100), nullable=False)
@@ -74,7 +69,6 @@ class Product(db.Model):
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }
-    
 # Cart class
 class Cart(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -86,8 +80,8 @@ class Cart(db.Model):
     image2 = db.Column(db.String(255))
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    product = db.relationship('Product', backref=db.backref('cart', lazy=True))
-    user = db.relationship('User', backref=db.backref('user_carts', lazy=True))  # Update backref name to 'user_carts'
+    product = db.relationship('Product', backref=db.backref('carts', lazy=True))
+    user = db.relationship('User', backref=db.backref('carts', lazy=True))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -113,5 +107,10 @@ class Cart(db.Model):
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }
+        
+
+
+
+
 
 

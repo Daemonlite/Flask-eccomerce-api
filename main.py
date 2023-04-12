@@ -132,6 +132,45 @@ def update_product(product_id):
     return jsonify({'product': product.to_dict()}), 200
 
 
+@app.route('/cart/add', methods=['POST'])
+def add_to_cart():
+    # Get the user_id and product_id from the request
+    user_id = request.form.get('user_id')
+    product_id = request.form.get('product_id')
+
+    # Check if user_id and product_id are provided
+    if not user_id or not product_id:
+        return jsonify({'error': 'User ID and Product ID are required'}), 400
+
+    # Check if the user and product exist in the database
+    user = User.query.get(user_id)
+    product = Product.query.get(product_id)
+
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    if not product:
+        return jsonify({'error': 'Product not found'}), 404
+
+    # Create a new cart item
+    cart_item = Cart(
+        descr=product.descr,
+        quantity=1,
+        price=product.price,
+        category=product.category,
+        image1=product.image1,
+        image2=product.image2,
+        product_id=product.id,
+        user_id=user.id
+    )
+
+    # Add the cart item to the database
+    db.session.add(cart_item)
+    db.session.commit()
+
+    # Return the cart item as a JSON response
+    return jsonify({'message': 'Product added to cart successfully', 'cart_item': cart_item.to_dict()}), 201
+
 if __name__ == '__main__':
     with app.app_context():  
         db.create_all()  

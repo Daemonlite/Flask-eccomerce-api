@@ -171,6 +171,41 @@ def add_to_cart():
     # Return the cart item as a JSON response
     return jsonify({'message': 'Product added to cart successfully', 'cart_item': cart_item.to_dict()}), 201
 
+
+@app.route('/cart/remove', methods=['POST'])
+def remove_from_cart():
+    # Get the user_id and product_id from the request
+    user_id = request.form.get('user_id')
+    product_id = request.form.get('product_id')
+
+    # Check if user_id and product_id are provided
+    if not user_id or not product_id:
+        return jsonify({'error': 'User ID and Product ID are required'}), 400
+
+    # Check if the user and product exist in the database
+    user = User.query.get(user_id)
+    product = Product.query.get(product_id)
+
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    if not product:
+        return jsonify({'error': 'Product not found'}), 404
+
+    # Find the cart item associated with the user and product
+    cart_item = Cart.query.filter_by(user_id=user.id, product_id=product.id).first()
+
+    if not cart_item:
+        return jsonify({'error': 'Product not found in cart'}), 404
+
+    # Remove the cart item from the database
+    db.session.delete(cart_item)
+    db.session.commit()
+
+    # Return success message as a JSON response
+    return jsonify({'message': 'Product removed from cart successfully'}), 200
+
+
 if __name__ == '__main__':
     with app.app_context():  
         db.create_all()  

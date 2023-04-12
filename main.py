@@ -15,7 +15,7 @@ def add_cors_headers(response):
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE') # Allow specific HTTP methods
     return response
 # Configure the database connection settings
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydatabase.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ecommerce.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize SQLAlchemy with the Flask app
@@ -144,3 +144,10 @@ def delete_product(id):
         return jsonify({'message': 'product deleted successfully.'})
     else:
         return jsonify({'error': 'product not found.'}), 404
+
+
+
+if __name__ == '__main__':
+    with app.app_context():  
+        db.create_all()  
+    app.run(debug=True)

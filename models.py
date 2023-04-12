@@ -75,35 +75,39 @@ class Product(db.Model):
     
 class Cart(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    descr = db.Column(db.String(400),nullable=False)
-    quantity = db.Column(db.Integer,primary_key=True)
-    price = db.Column(db.Integer,primary_key = True)
+    descr = db.Column(db.String(400), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    price = db.Column(db.Integer, nullable=False)
     category = db.Column(db.String(100), nullable=False)
     image1 = db.Column(db.String(255))
     image2 = db.Column(db.String(255))
-    product = db.relationship('Product',backref=db.backref('cart', lazy=True))
-    user = db.relationship('User',backref=db.backref('cart', lazy=True))
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    product = db.relationship('Product', backref=db.backref('cart', lazy=True))
+    user = db.relationship('User', backref=db.backref('cart', lazy=True))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    def __init__(self,product_name,descr,quantity,price,category,image1,image2):
-        self.product_name = product_name
+    def __init__(self, descr, quantity, price, category, image1, image2, product_id, user_id):
         self.descr = descr
         self.quantity = quantity
         self.price = price
         self.category = category
         self.image1 = image1
         self.image2 = image2
+        self.product_id = product_id
+        self.user_id = user_id
 
     def to_dict(self):
         return {
-            'id':self.id,
-            'descr':self.descr,
-            'quantity':self.quantity,
-            'price':self.price,
-            'category':self.category,
-            'image1':self.image1,
-            'image2':self.image2,
+            'id': self.id,
+            'descr': self.descr,
+            'quantity': self.quantity,
+            'price': self.price,
+            'category': self.category,
+            'image1': self.image1,
+            'image2': self.image2,
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }
+
